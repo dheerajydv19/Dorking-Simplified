@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dorking Simplified</title>
+    
+    <style>
+        
+        body {
+            
+            background-image: url('11.jpg');
+        }
+       
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #8be9dc;
+            border:12px solid #0b0b0b;
+            margin-top: 50px;
+        }
+
+        .search-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box input[type="text"] {
+            width: 300px;
+            height: 30px;
+            padding: 5px;
+        }
+
+        .purple-section {
+            background-color: rgb(118, 149, 196);
+            color: rgb(235, 217, 217);
+            padding: 20px;
+            border: 2px solid #0b0b0b;
+            margin-bottom: 20px;
+        }
+
+        .purple-section a {
+            color: rgb(25, 25, 26);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        
+
+        .purple-section input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .search-button {
+            text-align: center;
+        }
+
+        ul.link-list {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        ul.link-list li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+     <div> 
+        <div class="search-box">
+            <input type="text" id="domainInput" placeholder="example.com">
+        <button id="updateDomainButton">Update Domain</button>
+                
+            </div>
+        </div>
+
+    <div class="container">
+        <ul id="dorkList"></ul>
+        <div class="purple-section a">
+             
+           FOLLOW ME ON SOCIAL MEDIA    
+            <br>
+            <a href="kkk"></a><!--  this one is for space dont remove-->
+            
+             <a href="https://linktr.ee/dheerajydv19">   CLICK HERE</a> 
+             <a href="https : 19">   </a> <!--  this one is for space dont remove-->
+             <a href="https: 9">    </a> <!--  this one is for space dont remove-->
+            
+        </div>
+    </div>
+ 
+            
+            
+        
+     <!-- Add more sections as needed -->
+     <script>
+        let originalDorks = [];
+
+        async function fetchDorks() {
+            const url = "https://raw.githubusercontent.com/TakSec/google-dorks-bug-bounty/main/README.md";
+            const response = await fetch(url);
+            const text = await response.text();
+
+            const dorkList = document.getElementById("dorkList");
+            const regex = /(?:^### (.+)|^> (.+))/gm;
+            let match;
+            let title = '';
+            let firstDork = true;
+
+            while ((match = regex.exec(text)) !== null) {
+                if (match[1]) {
+                    // Title match
+                    title = match[1];
+                } else {
+                    // Dork match
+                    if (firstDork) {
+                        firstDork = false;
+                        continue;
+                    }
+                    const dork = match[2];
+                    originalDorks.push(dork);
+                    const listItem = createDorkListItem(dork, title);
+                    dorkList.appendChild(listItem);
+                }
+            }
+        }
+
+        let prevTitle = '';
+
+        function createDorkListItem(dork, description) {
+            const googleLink = `https://www.google.com/search?q=${encodeURIComponent(dork)}`;
+
+            const listItem = document.createElement("li");
+
+            if (description && description !== prevTitle) {
+                const desc = document.createElement("p");
+                desc.textContent = description;
+                desc.classList.add("description");
+                listItem.appendChild(desc);
+                prevTitle = description;
+            }
+
+            const link = document.createElement("a");
+            link.href = googleLink;
+            link.textContent = dork;
+            link.classList.add("dorkLink");
+            link.target = "_blank";
+
+            listItem.appendChild(link);
+
+            return listItem;
+        }
+
+        function updateDomain() {
+            const domainInput = document.getElementById("domainInput");
+            const domain = domainInput.value;
+            if (!domain) return;
+
+            const dorkLinks = document.querySelectorAll(".dorkLink");
+            dorkLinks.forEach((link, index) => {
+                const originalDork = originalDorks[index];
+                const updatedDork = originalDork.replace(/example(?:\[?\.\]?|\.)com/g, domain);
+                const updatedLink = `https://www.google.com/search?q=${encodeURIComponent(updatedDork)}`;
+
+                link.textContent = updatedDork;
+                link.href = updatedLink;
+            });
+        }
+
+        const updateDomainButton = document.getElementById("updateDomainButton");
+        updateDomainButton.addEventListener("click", updateDomain);
+
+        fetchDorks();
+    </script>
+</body>
+</html>
